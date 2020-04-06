@@ -21,6 +21,6 @@ vendor/
 
 TIX-HOTEL-UTILITIES-GO
 *.log
-#main.go
+main.go
 commonutil
 TIX-HOTEL-TESTING-ENGINE-BE/TIX-HOTEL-TESTING-ENGINE-BE
