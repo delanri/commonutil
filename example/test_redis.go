@@ -89,7 +89,7 @@ type Hotel struct {
 			Rating         int    `json:"rating"`
 			RatingImageURL string `json:"ratingImageUrl"`
 			URL            string `json:"url"`
-		} `json:"tiket"`
+		} `json:"ovo"`
 		Tripadvisor struct {
 			Count          int    `json:"count"`
 			Impression     string `json:"impression"`
@@ -328,7 +328,7 @@ func generateHotel(iteration int) []Hotel {
 					Rating         int    `json:"rating"`
 					RatingImageURL string `json:"ratingImageUrl"`
 					URL            string `json:"url"`
-				} `json:"tiket"`
+				} `json:"ovo"`
 				Tripadvisor struct {
 					Count          int    `json:"count"`
 					Impression     string `json:"impression"`

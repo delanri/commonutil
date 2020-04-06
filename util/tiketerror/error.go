@@ -1,4 +1,4 @@
-package tiketerror
+package ovoerror
 
 import (
 	"errors"
@@ -19,7 +19,7 @@ type (
 		IsErrorOf(string) bool
 	}
 
-	tiketError struct {
+	ovoError struct {
 		Errors     []string
 		Code       string
 		Message    string
@@ -112,7 +112,7 @@ var (
 	}
 )
 
-func (e tiketError) Error() string {
+func (e ovoError) Error() string {
 	err := e.Errors
 	if len(err) > 0 {
 		return err[0]
@@ -121,31 +121,31 @@ func (e tiketError) Error() string {
 	}
 }
 
-func (e tiketError) Wrap(errMessage string) {
+func (e ovoError) Wrap(errMessage string) {
 	e.Errors[0] = fmt.Sprintf("%s: %s", errMessage, e.Errors[0])
 }
 
-func (e *tiketError) AppendError(errMessage string) {
+func (e *ovoError) AppendError(errMessage string) {
 	e.Errors = append(e.Errors, errMessage)
 }
 
-func (e tiketError) GetCode() string {
+func (e ovoError) GetCode() string {
 	return e.Code
 }
 
-func (e tiketError) GetMessage() string {
+func (e ovoError) GetMessage() string {
 	return e.Message
 }
 
-func (e tiketError) GetErrors() []string {
+func (e ovoError) GetErrors() []string {
 	return e.Errors
 }
 
-func (e tiketError) GetHTTPStatus() int {
+func (e ovoError) GetHTTPStatus() int {
 	return e.HTTPStatus
 }
 
-func (e tiketError) IsErrorOf(code string) bool {
+func (e ovoError) IsErrorOf(code string) bool {
 	if strings.ToLower(e.Code) == strings.ToLower(code) {
 		return true
 	}
@@ -158,7 +158,7 @@ func New(code string, err error) ErrorStandard {
 		errMessage := responseCodes[SUCCESS].message
 		errHTTPStatus := responseCodes[SUCCESS].httpStatus
 
-		return &tiketError{
+		return &ovoError{
 			Errors:     []string{},
 			Code:       errCode,
 			Message:    errMessage,
@@ -171,17 +171,17 @@ func New(code string, err error) ErrorStandard {
 	errHTTPStatus := responseCodes[SYSTEM_ERROR].httpStatus
 	errorList := make([]string, 0)
 
-	if tiketError, ok := responseCodes[code]; ok {
-		errCode = tiketError.code
-		errMessage = tiketError.message
-		errHTTPStatus = tiketError.httpStatus
+	if ovoError, ok := responseCodes[code]; ok {
+		errCode = ovoError.code
+		errMessage = ovoError.message
+		errHTTPStatus = ovoError.httpStatus
 
 		if err != nil {
 			errorList = append(errorList, err.Error())
 		}
 	}
 
-	return &tiketError{
+	return &ovoError{
 		Errors:     errorList,
 		Code:       errCode,
 		Message:    errMessage,

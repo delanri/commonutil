@@ -1,4 +1,4 @@
-package tikettime
+package ovotime
 
 import "time"
 
