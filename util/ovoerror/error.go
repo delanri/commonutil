@@ -3,6 +3,7 @@ package ovoerror
 import (
 	"errors"
 	"fmt"
+	"github.com/delanri/commonutil/util/ovostatus"
 	"net/http"
 	"strings"
 )
@@ -50,63 +51,63 @@ const (
 var (
 	responseCodes = map[string]ResponseCode{
 		SUCCESS: ResponseCode{
-			code:       SUCCESS,
+			code:       ovostatus.SUCCESS,
 			message:    "Success",
 			httpStatus: http.StatusOK,
 		},
 		SYSTEM_ERROR: ResponseCode{
-			code:       SYSTEM_ERROR,
+			code:       ovostatus.SYSTEM_ERROR,
 			message:    "Contact our team",
 			httpStatus: http.StatusInternalServerError,
 		},
 		DUPLICATE_DATA: ResponseCode{
-			code:       DUPLICATE_DATA,
+			code:       ovostatus.DUPLICATE_DATA,
 			message:    "Duplicate data",
 			httpStatus: http.StatusOK,
 		},
 		DATA_NOT_EXIST: ResponseCode{
-			code:       DATA_NOT_EXIST,
+			code:       ovostatus.DATA_NOT_EXIST,
 			message:    "No data exist",
 			httpStatus: http.StatusOK,
 		},
 		BIND_ERROR: ResponseCode{
-			code:       BIND_ERROR,
+			code:       ovostatus.BIND_ERROR,
 			message:    "Please fill in mandatory parameter",
 			httpStatus: http.StatusOK,
 		},
 		RUNTIME_ERROR: ResponseCode{
-			code:       RUNTIME_ERROR,
+			code:       ovostatus.RUNTIME_ERROR,
 			message:    "Runtime Error",
 			httpStatus: http.StatusInternalServerError,
 		},
 		DATE_NOT_VALID: ResponseCode{
-			code:       DATE_NOT_VALID,
+			code:       ovostatus.DATE_NOT_VALID,
 			message:    "Date not valid",
 			httpStatus: http.StatusOK,
 		},
 		VENDOR_SHUTDOWN: ResponseCode{
-			code:       VENDOR_SHUTDOWN,
+			code:       ovostatus.VENDOR_SHUTDOWN,
 			message:    "Vendor is Shutdown",
 			httpStatus: http.StatusOK,
 		},
 		METHOD_ARGUMENTS_NOT_VALID: ResponseCode{
-			code:       METHOD_ARGUMENTS_NOT_VALID,
+			code:       ovostatus.METHOD_ARGUMENTS_NOT_VALID,
 			message:    "Method argument is not valid",
 			httpStatus: http.StatusOK,
 		},
 		TOO_MANY_REQUEST: ResponseCode{
-			code:       TOO_MANY_REQUEST,
+			code:       ovostatus.TOO_MANY_REQUEST,
 			message:    "Invalid data",
 			httpStatus: http.StatusOK,
 		},
 		BAD_REQUEST: ResponseCode{
-			code:       BAD_REQUEST,
+			code:       ovostatus.BAD_REQUEST,
 			message:    "Bad request",
 			httpStatus: http.StatusBadRequest,
 		},
 		UNAUTHORIZE: ResponseCode{
-			code:       UNAUTHORIZE,
-			message:    "Unauthorize",
+			code:       ovostatus.UNAUTHORIZE,
+			message:    "Unauthorized",
 			httpStatus: http.StatusUnauthorized,
 		},
 	}
