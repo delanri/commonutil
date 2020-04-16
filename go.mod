@@ -4,12 +4,11 @@ go 1.13
 
 require (
 	cloud.google.com/go v0.37.4
-	github.com/Shopify/sarama v1.23.1
+	github.com/Shopify/sarama v1.26.1
 	github.com/bsm/sarama-cluster v2.1.15+incompatible
 	github.com/chromedp/cdproto v0.0.0-20191114225735-6626966fbae4
 	github.com/chromedp/chromedp v0.5.2
 	github.com/digitalysin/ants v1.5.0
-	github.com/eapache/go-resiliency v1.2.0 // indirect
 	github.com/elastic/go-elasticsearch/v7 v7.5.0
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
@@ -40,11 +39,9 @@ require (
 	github.com/spf13/viper v1.4.0
 	github.com/tidwall/pretty v1.0.0 // indirect
 	go.mongodb.org/mongo-driver v1.2.1
-	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4 // indirect
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859
+	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 	google.golang.org/appengine v1.6.1 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.29.0
-	gopkg.in/jcmturner/goidentity.v3 v3.0.0 // indirect
 	syreclabs.com/go/faker v1.2.0
 )
