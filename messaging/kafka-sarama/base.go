@@ -132,7 +132,6 @@ func (l *Kafka) NewListener(option *Option) (*cluster.Consumer, error) {
 
 		config.Net.TLS.Enable = true
 		tlsConfig := &tls.Config{
-			InsecureSkipVerify: true,
 			ClientAuth:         0,
 		}
 		config.Net.TLS.Config = tlsConfig
@@ -171,7 +170,6 @@ func (l *Kafka) NewClient() (sarama.Client, error) {
 
 		configProducer.Net.TLS.Enable = true
 		tlsConfig := &tls.Config{
-			InsecureSkipVerify: true,
 			ClientAuth:         0,
 		}
 		configProducer.Net.TLS.Config = tlsConfig
