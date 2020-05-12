@@ -113,10 +113,10 @@ func (l *Kafka) NewListener(option *Option) (*cluster.Consumer, error) {
 	config := cluster.NewConfig()
 
 	config.Consumer.Return.Errors = true
-	// config.Consumer.MaxWaitTime = l.Option.MaxWait
+	config.Consumer.MaxWaitTime = l.Option.MaxWait
 	config.Group.Return.Notifications = true
-	// config.Group.PartitionStrategy = l.Option.Strategy
-	// config.Group.Heartbeat.Interval = time.Duration(l.Option.Heartbeat) * time.Second
+	config.Group.PartitionStrategy = l.Option.Strategy
+	config.Group.Heartbeat.Interval = time.Duration(l.Option.Heartbeat) * time.Second
 
 	config.Net.SASL.Enable = l.Option.SaslEnabled
 	if l.Option.SaslEnabled {
