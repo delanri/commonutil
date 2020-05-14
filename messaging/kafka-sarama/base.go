@@ -13,14 +13,15 @@ import (
 )
 
 const (
-	DefaultConsumerWorker       = 10
-	DefaultStrategy             = cluster.StrategyRoundRobin
-	DefaultHeartbeat            = 3
-	DefaultProducerMaxBytes     = 1000000
-	DefaultProducerRetryMax     = 3
-	DefaultProducerRetryBackoff = 100
-	DefaultMaxWait              = 10 * time.Second
-	DefaultSaslEnabled          = true
+	DefaultConsumerWorker                = 10
+	DefaultStrategy                      = cluster.StrategyRoundRobin
+	DefaultHeartbeat                     = 3
+	DefaultProducerMaxBytes              = 1000000
+	DefaultProducerRetryMax              = 3
+	DefaultProducerRetryBackoff          = 100
+	DefaultMaxWait                       = 10 * time.Second
+	DefaultSaslEnabled                   = true
+	DefaultConsumerOffsetsCommitInterval = 1 * time.Second
 )
 
 type Kafka struct {
@@ -32,21 +33,22 @@ type Kafka struct {
 }
 
 type Option struct {
-	Host                 []string
-	ConsumerWorker       int
-	ConsumerGroup        string
-	Strategy             cluster.Strategy
-	Heartbeat            int
-	ProducerMaxBytes     int
-	ProducerRetryMax     int
-	ProducerRetryBackOff int
-	KafkaVersion         string
-	ListTopics           []string
-	MaxWait              time.Duration
-	Log                  logs.Logger
-	SaslEnabled          bool
-	SaslUser             string
-	SaslPassword         string
+	Host                          []string
+	ConsumerWorker                int
+	ConsumerGroup                 string
+	ConsumerOffsetsCommitInterval time.Duration
+	Strategy                      cluster.Strategy
+	Heartbeat                     int
+	ProducerMaxBytes              int
+	ProducerRetryMax              int
+	ProducerRetryBackOff          int
+	KafkaVersion                  string
+	ListTopics                    []string
+	MaxWait                       time.Duration
+	Log                           logs.Logger
+	SaslEnabled                   bool
+	SaslUser                      string
+	SaslPassword                  string
 }
 
 func getOption(option *Option) error {
@@ -86,6 +88,11 @@ func getOption(option *Option) error {
 	if option.MaxWait == 0 {
 		option.MaxWait = DefaultMaxWait
 	}
+
+	if option.ConsumerOffsetsCommitInterval == 0 {
+		option.ConsumerOffsetsCommitInterval = DefaultConsumerOffsetsCommitInterval
+	}
+
 	return nil
 }
 
@@ -114,6 +121,7 @@ func (l *Kafka) NewListener(option *Option) (*cluster.Consumer, error) {
 
 	config.Consumer.Return.Errors = true
 	config.Consumer.MaxWaitTime = l.Option.MaxWait
+	config.Consumer.Offsets.CommitInterval = l.Option.ConsumerOffsetsCommitInterval
 	config.Group.Return.Notifications = true
 	config.Group.PartitionStrategy = l.Option.Strategy
 	config.Group.Heartbeat.Interval = time.Duration(l.Option.Heartbeat) * time.Second
@@ -132,7 +140,7 @@ func (l *Kafka) NewListener(option *Option) (*cluster.Consumer, error) {
 
 		config.Net.TLS.Enable = true
 		tlsConfig := &tls.Config{
-			ClientAuth:         0,
+			ClientAuth: 0,
 		}
 		config.Net.TLS.Config = tlsConfig
 	}
@@ -170,7 +178,7 @@ func (l *Kafka) NewClient() (sarama.Client, error) {
 
 		configProducer.Net.TLS.Enable = true
 		tlsConfig := &tls.Config{
-			ClientAuth:         0,
+			ClientAuth: 0,
 		}
 		configProducer.Net.TLS.Config = tlsConfig
 	}
