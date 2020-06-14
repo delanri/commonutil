@@ -23,8 +23,9 @@ type (
 		Print(...interface{})
 		Printf(string, ...interface{})
 		Instance() interface{}
-		AddDefault(string, interface{}) *logger
+		WithFields(keyValues Fields) Logger
 	}
+	Fields map[string]interface{}
 
 	Level     string
 	Formatter string
@@ -37,6 +38,10 @@ type (
 
 	logger struct {
 		instance *logrus.Logger
+	}
+
+	logrusLogEntry struct {
+		entry *logrus.Entry
 	}
 )
 
@@ -100,6 +105,7 @@ func (l *logger) Printf(format string, args ...interface{}) {
 func (l *logger) Instance() interface{} {
 	return l.instance
 }
+
 func New(option *Option) (Logger, error) {
 	instance := logrus.New()
 
@@ -143,7 +149,6 @@ func New(option *Option) (Logger, error) {
 	return &logger{instance}, nil
 }
 
-
 func DefaultLog() (Logger, error) {
 	return New(&Option{
 		Level:     Info,
@@ -154,4 +159,80 @@ func DefaultLog() (Logger, error) {
 func (l *logger) AddDefault(key string, value interface{}) *logger {
 	l.instance.WithField(key, value)
 	return l
+}
+
+func (l *logger) WithFields(fields Fields) Logger {
+	return &logrusLogEntry{
+		entry: l.instance.WithFields(convertToLogrusFields(fields)),
+	}
+}
+
+func (l *logrusLogEntry) Panicf(format string, args ...interface{}) {
+	l.entry.Fatalf(format, args...)
+}
+
+func (l *logrusLogEntry) WithFields(fields Fields) Logger {
+	return &logrusLogEntry{
+		entry: l.entry.WithFields(convertToLogrusFields(fields)),
+	}
+}
+
+func (l *logrusLogEntry) Info(args ...interface{}) {
+	l.entry.Info(args...)
+}
+
+func (l *logrusLogEntry) Infof(format string, args ...interface{}) {
+	l.entry.Infof(format, args...)
+}
+
+func (l *logrusLogEntry) Debug(i ...interface{}) {
+	l.entry.Debug(i...)
+}
+
+func (l *logrusLogEntry) Debugf(format string, args ...interface{}) {
+	l.entry.Debugf(format, args...)
+}
+
+func (l *logrusLogEntry) Error(i ...interface{}) {
+	l.entry.Error(i...)
+}
+
+func (l *logrusLogEntry) Errorf(format string, args ...interface{}) {
+	l.entry.Errorf(format, args...)
+}
+
+func (l *logrusLogEntry) Warning(args ...interface{}) {
+	l.entry.Warn(args...)
+}
+
+func (l *logrusLogEntry) Warningf(format string, args ...interface{}) {
+	l.entry.Warnf(format, args...)
+}
+
+func (l *logrusLogEntry) Fatal(args ...interface{}) {
+	l.entry.Fatal(args...)
+}
+
+func (l *logrusLogEntry) Fatalf(format string, args ...interface{}) {
+	l.entry.Fatalf(format, args...)
+}
+
+func (l *logrusLogEntry) Print(args ...interface{}) {
+	l.entry.Print(args...)
+}
+
+func (l *logrusLogEntry) Printf(format string, args ...interface{}) {
+	l.entry.Printf(format, args...)
+}
+
+func (l *logrusLogEntry) Instance() interface{} {
+	panic("implement me")
+}
+
+func convertToLogrusFields(fields Fields) logrus.Fields {
+	logrusFields := logrus.Fields{}
+	for index, val := range fields {
+		logrusFields[index] = val
+	}
+	return logrusFields
 }
