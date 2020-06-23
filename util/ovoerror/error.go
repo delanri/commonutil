@@ -46,6 +46,8 @@ const (
 	TOO_MANY_REQUEST           = "TOO_MANY_REQUEST"
 	BAD_REQUEST                = "BAD_REQUEST"
 	UNAUTHORIZE                = "UNAUTHORIZE"
+	DUPLICATE_BANK_ACCOUNT	   = "DUPLICATE_BANK_ACCOUNT"
+	DIFFERENT_NAME_BANK_ACCOUNT= "DIFFERENT_NAME_BANK_ACCOUNT"
 )
 
 var (
@@ -109,6 +111,16 @@ var (
 			code:       ovostatus.UNAUTHORIZE,
 			message:    "Unauthorized",
 			httpStatus: http.StatusUnauthorized,
+		},
+		DUPLICATE_BANK_ACCOUNT: ResponseCode{
+			code:       ovostatus.DUPLICATE_BANK_ACCOUNT,
+			message:    "Bank account is already registered",
+			httpStatus: http.StatusOK,
+		},
+		DIFFERENT_NAME_BANK_ACCOUNT: ResponseCode{
+			code:       ovostatus.DIFFERENT_NAME_BANK_ACCOUNT,
+			message:    "Different name with bank account name",
+			httpStatus: http.StatusOK,
 		},
 	}
 )
