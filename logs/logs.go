@@ -23,6 +23,7 @@ type (
 		Print(...interface{})
 		Printf(string, ...interface{})
 		Instance() interface{}
+		AddDefault(string, interface{}) *logger
 	}
 
 	Level     string
@@ -142,9 +143,15 @@ func New(option *Option) (Logger, error) {
 	return &logger{instance}, nil
 }
 
+
 func DefaultLog() (Logger, error) {
 	return New(&Option{
 		Level:     Info,
 		Formatter: TextFormatter,
 	})
+}
+
+func (l *logger) AddDefault(key string, value interface{}) *logger {
+	l.instance.WithField(key, value)
+	return l
 }
