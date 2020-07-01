@@ -115,12 +115,12 @@ var (
 		DUPLICATE_BANK_ACCOUNT: ResponseCode{
 			code:       ovostatus.DUPLICATE_BANK_ACCOUNT,
 			message:    "Bank account is already registered",
-			httpStatus: http.StatusOK,
+			httpStatus: http.StatusBadRequest,
 		},
 		DIFFERENT_NAME_BANK_ACCOUNT: ResponseCode{
 			code:       ovostatus.DIFFERENT_NAME_BANK_ACCOUNT,
 			message:    "Different name with bank account name",
-			httpStatus: http.StatusOK,
+			httpStatus: http.StatusBadRequest,
 		},
 	}
 )
