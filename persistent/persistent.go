@@ -48,7 +48,7 @@ type (
 
 		Create(interface{}) error
 		Update(interface{}) error
-		Updates(interface{}) error
+		UpdateFields(interface{}) error
 		Delete(interface{}) error
 		BulkDelete(string, []interface{}) error
 		SoftDelete(interface{}) error
@@ -178,7 +178,7 @@ func (o *Impl) Update(object interface{}) error {
 	return nil
 }
 
-func (o *Impl) Updates(object interface{}) error {
+func (o *Impl) UpdateFields(object interface{}) error {
 	res := o.Database.Updates(object)
 
 	if err := res.Error; err != nil {
