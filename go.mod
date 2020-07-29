@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	cloud.google.com/go v0.37.4
-	github.com/Shopify/sarama v1.26.1
+	github.com/Shopify/sarama v1.26.4
 	github.com/bsm/sarama-cluster v2.1.15+incompatible
 	github.com/chromedp/cdproto v0.0.0-20191114225735-6626966fbae4
 	github.com/chromedp/chromedp v0.5.2
@@ -20,7 +20,6 @@ require (
 	github.com/labstack/echo/v4 v4.1.6
 	github.com/labstack/gommon v0.2.9
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/mactynow/commonutil v1.2.2 // indirect
 	github.com/mailru/easyjson v0.7.1
 	github.com/newrelic/go-agent v3.0.0+incompatible
 	github.com/pkg/errors v0.8.1
