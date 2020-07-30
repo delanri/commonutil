@@ -2,11 +2,12 @@ package kafka_sarama
 
 import (
 	"crypto/tls"
+	"log"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/Shopify/sarama"
-	cluster "github.com/bsm/sarama-cluster"
 	"github.com/delanri/commonutil/logs"
 	"github.com/delanri/commonutil/messaging"
 	"github.com/pkg/errors"
@@ -14,41 +15,40 @@ import (
 
 const (
 	DefaultConsumerWorker                = 10
-	DefaultStrategy                      = cluster.StrategyRoundRobin
 	DefaultHeartbeat                     = 3
 	DefaultProducerMaxBytes              = 1000000
 	DefaultProducerRetryMax              = 3
 	DefaultProducerRetryBackoff          = 100
 	DefaultMaxWait                       = 10 * time.Second
-	DefaultSaslEnabled                   = true
 	DefaultConsumerOffsetsCommitInterval = 1 * time.Second
 )
 
 type Kafka struct {
 	Option            *Option
-	Consumer          *cluster.Consumer
+	Consumer          sarama.ConsumerGroup
 	CallbackFunctions map[string][]messaging.CallbackFunc
 	Client            sarama.Client
 	mu                *sync.Mutex
 }
 
 type Option struct {
-	Host                          []string
-	ConsumerWorker                int
-	ConsumerGroup                 string
-	ConsumerOffsetsCommitInterval time.Duration
-	Strategy                      cluster.Strategy
-	Heartbeat                     int
-	ProducerMaxBytes              int
-	ProducerRetryMax              int
-	ProducerRetryBackOff          int
-	KafkaVersion                  string
-	ListTopics                    []string
-	MaxWait                       time.Duration
-	Log                           logs.Logger
-	SaslEnabled                   bool
-	SaslUser                      string
-	SaslPassword                  string
+	Host                              []string
+	ConsumerWorker                    int
+	ConsumerGroup                     string
+	ConsumerOffsetsAutoCommitEnabled  bool
+	ConsumerOffsetsAutoCommitInterval time.Duration
+	Strategy                          string
+	Heartbeat                         int
+	ProducerMaxBytes                  int
+	ProducerRetryMax                  int
+	ProducerRetryBackOff              int
+	KafkaVersion                      string
+	ListTopics                        []string
+	MaxWait                           time.Duration
+	Log                               logs.Logger
+	SaslEnabled                       bool
+	SaslUser                          string
+	SaslPassword                      string
 }
 
 func getOption(option *Option) error {
@@ -59,10 +59,6 @@ func getOption(option *Option) error {
 	if option.Log == nil {
 		logger, _ := logs.DefaultLog()
 		option.Log = logger
-	}
-
-	if option.Strategy == "" {
-		option.Strategy = DefaultStrategy
 	}
 
 	if option.Heartbeat == 0 {
@@ -89,8 +85,8 @@ func getOption(option *Option) error {
 		option.MaxWait = DefaultMaxWait
 	}
 
-	if option.ConsumerOffsetsCommitInterval == 0 {
-		option.ConsumerOffsetsCommitInterval = DefaultConsumerOffsetsCommitInterval
+	if option.ConsumerOffsetsAutoCommitInterval == 0 {
+		option.ConsumerOffsetsAutoCommitInterval = DefaultConsumerOffsetsCommitInterval
 	}
 
 	return nil
@@ -116,15 +112,29 @@ func New(option *Option) (messaging.QueueV2, error) {
 	return &l, nil
 }
 
-func (l *Kafka) NewListener(option *Option) (*cluster.Consumer, error) {
-	config := cluster.NewConfig()
+func (l *Kafka) NewListener() (sarama.ConsumerGroup, error) {
+	log.Println("Starting a new Sarama consumer")
+	kfkVersion, err := sarama.ParseKafkaVersion(l.Option.KafkaVersion)
 
+	sarama.Logger = log.New(os.Stdout, "[sarama] ", log.LstdFlags)
+
+	config := sarama.NewConfig()
+	config.Version = kfkVersion
 	config.Consumer.Return.Errors = true
 	config.Consumer.MaxWaitTime = l.Option.MaxWait
-	config.Consumer.Offsets.CommitInterval = l.Option.ConsumerOffsetsCommitInterval
-	config.Group.Return.Notifications = true
-	config.Group.PartitionStrategy = l.Option.Strategy
-	config.Group.Heartbeat.Interval = time.Duration(l.Option.Heartbeat) * time.Second
+	config.Consumer.Offsets.AutoCommit.Enable = l.Option.ConsumerOffsetsAutoCommitEnabled
+	config.Consumer.Offsets.AutoCommit.Interval = l.Option.ConsumerOffsetsAutoCommitInterval
+
+	switch l.Option.Strategy {
+	case "sticky":
+		config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategySticky
+	case "roundrobin":
+		config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRoundRobin
+	case "range":
+		config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRange
+	default:
+		config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRoundRobin
+	}
 
 	config.Net.SASL.Enable = l.Option.SaslEnabled
 	if l.Option.SaslEnabled {
@@ -144,9 +154,13 @@ func (l *Kafka) NewListener(option *Option) (*cluster.Consumer, error) {
 		}
 		config.Net.TLS.Config = tlsConfig
 	}
-	brokers := l.Option.Host
 
-	return cluster.NewConsumer(brokers, l.Option.ConsumerGroup, l.Option.ListTopics, config)
+	group, err := sarama.NewConsumerGroup(l.Option.Host, l.Option.ConsumerGroup, config)
+	if err != nil {
+		panic(err)
+	}
+
+	return group, nil
 }
 
 func (l *Kafka) NewClient() (sarama.Client, error) {

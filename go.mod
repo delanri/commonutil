@@ -5,7 +5,6 @@ go 1.13
 require (
 	cloud.google.com/go v0.37.4
 	github.com/Shopify/sarama v1.26.4
-	github.com/bsm/sarama-cluster v2.1.15+incompatible
 	github.com/chromedp/cdproto v0.0.0-20191114225735-6626966fbae4
 	github.com/chromedp/chromedp v0.5.2
 	github.com/digitalysin/ants v1.5.0
