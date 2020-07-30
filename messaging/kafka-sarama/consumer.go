@@ -47,7 +47,7 @@ func (l *Kafka) Listen() {
 			// recreated to get the new claims
 			err := l.Consumer.Consume(ctx, l.Option.ListTopics, &consumer)
 			if err != nil {
-				log.Panicf("Error from consumer: %v", err)
+				log.Printf("Error from consumer: %v \n", err)
 			}
 			// check if context was cancelled, signaling that the consumer should stop
 			if ctx.Err() != nil {
