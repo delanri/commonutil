@@ -19,7 +19,7 @@ const (
 	DefaultProducerMaxBytes              = 1000000
 	DefaultProducerRetryMax              = 3
 	DefaultProducerRetryBackoff          = 100
-	DefaultMaxWait                       = 10 * time.Second
+	DefaultMaxWait                       = 250 * time.Millisecond
 	DefaultConsumerOffsetsCommitInterval = 1 * time.Second
 )
 
@@ -121,6 +121,7 @@ func (l *Kafka) NewListener() (sarama.ConsumerGroup, error) {
 	config := sarama.NewConfig()
 	config.Version = kfkVersion
 	config.Consumer.Return.Errors = true
+	config.Consumer.MaxWaitTime = l.Option.MaxWait
 	config.Consumer.Offsets.AutoCommit.Enable = l.Option.ConsumerOffsetsAutoCommitEnabled
 	config.Consumer.Offsets.AutoCommit.Interval = l.Option.ConsumerOffsetsAutoCommitInterval
 
