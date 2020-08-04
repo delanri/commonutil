@@ -120,8 +120,6 @@ func (l *Kafka) NewListener() (sarama.ConsumerGroup, error) {
 	config.Version = kfkVersion
 	config.Consumer.Return.Errors = true
 	config.Consumer.MaxWaitTime = l.Option.MaxWait
-	config.Consumer.Offsets.AutoCommit.Enable = l.Option.ConsumerOffsetsAutoCommitEnabled
-	config.Consumer.Offsets.AutoCommit.Interval = l.Option.ConsumerOffsetsAutoCommitInterval
 
 	switch l.Option.Strategy {
 	case "sticky":
