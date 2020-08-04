@@ -22,6 +22,7 @@ type (
 		Fatalf(string, ...interface{})
 		Print(...interface{})
 		Printf(string, ...interface{})
+		Println(...interface{})
 		Instance() interface{}
 		AddDefault(string, interface{}) *logger
 	}
@@ -97,6 +98,10 @@ func (l *logger) Printf(format string, args ...interface{}) {
 	l.instance.Printf(format, args...)
 }
 
+func (l *logger) Println(args ...interface{}) {
+	l.instance.Println(args...)
+}
+
 func (l *logger) Instance() interface{} {
 	return l.instance
 }
@@ -142,7 +147,6 @@ func New(option *Option) (Logger, error) {
 
 	return &logger{instance}, nil
 }
-
 
 func DefaultLog() (Logger, error) {
 	return New(&Option{

@@ -2,8 +2,6 @@ package kafka_sarama
 
 import (
 	"crypto/tls"
-	"log"
-	"os"
 	"sync"
 	"time"
 
@@ -113,10 +111,10 @@ func New(option *Option) (messaging.QueueV2, error) {
 }
 
 func (l *Kafka) NewListener() (sarama.ConsumerGroup, error) {
-	log.Println("Starting a new Sarama consumer")
+	l.Option.Log.Info("Starting a new Sarama consumer")
 	kfkVersion, err := sarama.ParseKafkaVersion(l.Option.KafkaVersion)
 
-	sarama.Logger = log.New(os.Stdout, "[sarama] ", log.LstdFlags)
+	sarama.Logger = l.Option.Log
 
 	config := sarama.NewConfig()
 	config.Version = kfkVersion
