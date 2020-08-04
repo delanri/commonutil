@@ -151,6 +151,8 @@ func (l *Kafka) NewListener() (sarama.ConsumerGroup, error) {
 		config.Net.TLS.Config = tlsConfig
 	}
 
+	config.Consumer.Offsets.Initial = sarama.OffsetOldest
+
 	group, err := sarama.NewConsumerGroup(l.Option.Host, l.Option.ConsumerGroup, config)
 	if err != nil {
 		panic(err)
