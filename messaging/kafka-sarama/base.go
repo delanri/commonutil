@@ -47,6 +47,8 @@ type Option struct {
 	SaslEnabled                       bool
 	SaslUser                          string
 	SaslPassword                      string
+	ConsumerOffsetOldest              bool
+	MessagingLogVerbose               bool
 }
 
 func getOption(option *Option) error {

@@ -24,18 +24,53 @@ func (l *Kafka) AddTopicListener(topic string, callback messaging.CallbackFunc) 
 
 func (l *Kafka) Listen() {
 
+	l.Option.Log.Println("Starting a new Sarama consumer")
+
+	if l.Option.MessagingLogVerbose {
+		sarama.Logger = l.Option.Log
+	}
+
+	version, err := sarama.ParseKafkaVersion(l.Option.KafkaVersion)
+	if err != nil {
+		log.Panicf("Error parsing Kafka version: %v", err)
+	}
+
+	/**
+	 * Construct a new Sarama configuration.
+	 * The Kafka cluster version has to be defined before the consumer/producer is initialized.
+	 */
+	config := sarama.NewConfig()
+	config.Version = version
+
+	switch l.Option.Strategy {
+	case "sticky":
+		config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategySticky
+	case "roundrobin":
+		config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRoundRobin
+	case "range":
+		config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRange
+	default:
+		log.Panicf("Unrecognized consumer group partition assignor: %s", l.Option.Strategy)
+	}
+
+	if l.Option.ConsumerOffsetOldest {
+		config.Consumer.Offsets.Initial = sarama.OffsetOldest
+	}
+
+	/**
+	 * Setup a new Sarama consumer group
+	 */
 	consumer := Consumer{
 		ready:             make(chan bool),
-		CallbackFunctions: l.CallbackFunctions,
 		Option:            l.Option,
+		CallbackFunctions: l.CallbackFunctions,
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-	listener, err := l.NewListener()
+	client, err := sarama.NewConsumerGroup(l.Option.Host, l.Option.ConsumerGroup, config)
 	if err != nil {
-		return
+		log.Panicf("Error creating consumer group client: %v", err)
 	}
-	l.Consumer = listener
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
@@ -45,8 +80,7 @@ func (l *Kafka) Listen() {
 			// `Consume` should be called inside an infinite loop, when a
 			// server-side rebalance happens, the consumer session will need to be
 			// recreated to get the new claims
-			err := l.Consumer.Consume(ctx, l.Option.ListTopics, &consumer)
-			if err != nil {
+			if err := client.Consume(ctx, l.Option.ListTopics, &consumer); err != nil {
 				log.Panicf("Error from consumer: %v", err)
 			}
 			// check if context was cancelled, signaling that the consumer should stop
@@ -58,20 +92,19 @@ func (l *Kafka) Listen() {
 	}()
 
 	<-consumer.ready // Await till the consumer has been set up
-	log.Printf("Sarama consumer up and running! Listening to  brokers %s \n", l.Option.Host)
+	l.Option.Log.Println("Sarama consumer up and running!...")
 
 	sigterm := make(chan os.Signal, 1)
 	signal.Notify(sigterm, syscall.SIGINT, syscall.SIGTERM)
 	select {
 	case <-ctx.Done():
-		log.Println("terminating: context cancelled")
+		l.Option.Log.Println("terminating: context cancelled")
 	case <-sigterm:
-		log.Println("terminating: via signal")
+		l.Option.Log.Println("terminating: via signal")
 	}
-
 	cancel()
 	wg.Wait()
-	if err := l.Consumer.Close(); err != nil {
+	if err = client.Close(); err != nil {
 		log.Panicf("Error closing client: %v", err)
 	}
 }
@@ -103,13 +136,13 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 	// The `ConsumeClaim` itself is called within a goroutine, see:
 	// https://github.com/Shopify/sarama/blob/master/consumer_group.go#L27-L29
 	for message := range claim.Messages() {
-		session.MarkMessage(message, "")
 		for _, callback := range consumer.CallbackFunctions[message.Topic] {
 			err := callback(message.Value)
 			if err != nil {
 				consumer.Option.Log.Error(err)
 			}
 		}
+		session.MarkMessage(message, "")
 	}
 
 	return nil
