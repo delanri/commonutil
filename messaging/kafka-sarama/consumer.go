@@ -2,6 +2,7 @@ package kafka_sarama
 
 import (
 	"context"
+	"crypto/tls"
 	"github.com/Shopify/sarama"
 	"github.com/delanri/commonutil/messaging"
 	"log"
@@ -57,6 +58,24 @@ func (l *Kafka) Listen() {
 		config.Consumer.Offsets.Initial = sarama.OffsetOldest
 	}
 
+	config.Net.SASL.Enable = l.Option.SaslEnabled
+	if l.Option.SaslEnabled {
+		config.Net.SASL.User = l.Option.SaslUser
+		if config.Net.SASL.User == "" {
+			log.Panic("CCLOUD_USER not set")
+		}
+
+		config.Net.SASL.Password = l.Option.SaslPassword
+		if config.Net.SASL.Password == "" {
+			log.Panic("CCLOUD_PASSWORD not set")
+		}
+
+		config.Net.TLS.Enable = true
+		tlsConfig := &tls.Config{
+			ClientAuth: 0,
+		}
+		config.Net.TLS.Config = tlsConfig
+	}
 	/**
 	 * Setup a new Sarama consumer group
 	 */
