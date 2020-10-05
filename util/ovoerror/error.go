@@ -48,6 +48,7 @@ const (
 	UNAUTHORIZE                = "UNAUTHORIZE"
 	DUPLICATE_BANK_ACCOUNT	   = "DUPLICATE_BANK_ACCOUNT"
 	DIFFERENT_NAME_BANK_ACCOUNT= "DIFFERENT_NAME_BANK_ACCOUNT"
+	TOP_UP_OVERLIMIT           = "TOP_UP_OVERLIMIT"
 )
 
 var (
@@ -120,6 +121,11 @@ var (
 		DIFFERENT_NAME_BANK_ACCOUNT: ResponseCode{
 			code:       ovostatus.DIFFERENT_NAME_BANK_ACCOUNT,
 			message:    "Different name with bank account name",
+			httpStatus: http.StatusBadRequest,
+		},
+		TOP_UP_OVERLIMIT: ResponseCode{
+			code:       ovostatus.TOP_UP_OVERLIMIT,
+			message:    "User OVO Cash balance exceeds limit",
 			httpStatus: http.StatusBadRequest,
 		},
 	}
