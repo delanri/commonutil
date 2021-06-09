@@ -3,9 +3,10 @@ package ovoerror
 import (
 	"errors"
 	"fmt"
-	"github.com/delanri/commonutil/util/ovostatus"
 	"net/http"
 	"strings"
+
+	"github.com/delanri/commonutil/util/ovostatus"
 )
 
 type (
@@ -34,21 +35,22 @@ type (
 )
 
 const (
-	SUCCESS                    = "SUCCESS"
-	SYSTEM_ERROR               = "SYSTEM_ERROR"
-	DUPLICATE_DATA             = "DUPLICATE_DATA"
-	DATA_NOT_EXIST             = "DATA_NOT_EXIST"
-	BIND_ERROR                 = "BIND_ERROR"
-	RUNTIME_ERROR              = "RUNTIME_ERROR"
-	DATE_NOT_VALID             = "DATE_NOT_VALID"
-	VENDOR_SHUTDOWN            = "VENDOR_SHUTDOWN"
-	METHOD_ARGUMENTS_NOT_VALID = "METHOD_ARGUMENTS_NOT_VALID"
-	TOO_MANY_REQUEST           = "TOO_MANY_REQUEST"
-	BAD_REQUEST                = "BAD_REQUEST"
-	UNAUTHORIZE                = "UNAUTHORIZE"
-	DUPLICATE_BANK_ACCOUNT	   = "DUPLICATE_BANK_ACCOUNT"
-	DIFFERENT_NAME_BANK_ACCOUNT= "DIFFERENT_NAME_BANK_ACCOUNT"
-	TOP_UP_OVERLIMIT           = "TOP_UP_OVERLIMIT"
+	SUCCESS                     = "SUCCESS"
+	SYSTEM_ERROR                = "SYSTEM_ERROR"
+	DUPLICATE_DATA              = "DUPLICATE_DATA"
+	DATA_NOT_EXIST              = "DATA_NOT_EXIST"
+	BIND_ERROR                  = "BIND_ERROR"
+	RUNTIME_ERROR               = "RUNTIME_ERROR"
+	DATE_NOT_VALID              = "DATE_NOT_VALID"
+	VENDOR_SHUTDOWN             = "VENDOR_SHUTDOWN"
+	METHOD_ARGUMENTS_NOT_VALID  = "METHOD_ARGUMENTS_NOT_VALID"
+	TOO_MANY_REQUEST            = "TOO_MANY_REQUEST"
+	BAD_REQUEST                 = "BAD_REQUEST"
+	UNAUTHORIZE                 = "UNAUTHORIZE"
+	DUPLICATE_BANK_ACCOUNT      = "DUPLICATE_BANK_ACCOUNT"
+	DIFFERENT_NAME_BANK_ACCOUNT = "DIFFERENT_NAME_BANK_ACCOUNT"
+	TOP_UP_OVERLIMIT            = "TOP_UP_OVERLIMIT"
+	BANK_ACCOUNT_NOT_FOUND      = "BANK_ACCOUNT_NOT_FOUND"
 )
 
 var (
@@ -126,6 +128,11 @@ var (
 		TOP_UP_OVERLIMIT: ResponseCode{
 			code:       ovostatus.TOP_UP_OVERLIMIT,
 			message:    "User OVO Cash balance exceeds limit",
+			httpStatus: http.StatusBadRequest,
+		},
+		BANK_ACCOUNT_NOT_FOUND: ResponseCode{
+			code:       ovostatus.BANK_ACCOUNT_NOT_FOUND,
+			message:    "Bank Account Not Found",
 			httpStatus: http.StatusBadRequest,
 		},
 	}
