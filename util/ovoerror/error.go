@@ -51,6 +51,15 @@ const (
 	DIFFERENT_NAME_BANK_ACCOUNT = "DIFFERENT_NAME_BANK_ACCOUNT"
 	TOP_UP_OVERLIMIT            = "TOP_UP_OVERLIMIT"
 	BANK_ACCOUNT_NOT_FOUND      = "BANK_ACCOUNT_NOT_FOUND"
+	ORS_BLOCKED 				= "ORS_BLOCKED"
+	INVALID_DATA   				= "INVALID_DATA"
+	THIRD_PARTY_ERROR 			= "THIRD_PARTY_ERROR"
+	INELIGIBLE					= "INELIGIBLE"
+	PAYMENT_FAILED				= "PAYMENT_FAILED"
+	PAYMENT_TIMED_OUT			= "PAYMENT_TIMED_OUT"
+	INSUFFICIENT_FUND			= "INSUFFICIENT_FUND"
+	INVALID_TRANSACTION         = "INVALID_TRANSACTION"
+	ORDER_CREATION_FAILED 		= "ORDER_CREATION_FAILED"
 )
 
 var (
@@ -134,6 +143,51 @@ var (
 			code:       ovostatus.BANK_ACCOUNT_NOT_FOUND,
 			message:    "Bank Account Not Found",
 			httpStatus: http.StatusBadRequest,
+		},
+		ORS_BLOCKED: ResponseCode{
+			code:       ovostatus.ORS_BLOCKED,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusBadRequest,
+		},
+		INVALID_DATA: ResponseCode{
+			code:       ovostatus.INVALID_DATA,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusBadRequest,
+		},
+		THIRD_PARTY_ERROR: ResponseCode{
+			code:       ovostatus.THIRD_PARTY_ERROR,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusBadRequest,
+		},
+		INELIGIBLE: ResponseCode{
+			code:       ovostatus.INELIGIBLE,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusBadRequest,
+		},
+		PAYMENT_FAILED: ResponseCode{
+			code:       ovostatus.PAYMENT_FAILED,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusBadRequest,
+		},
+		PAYMENT_TIMED_OUT: ResponseCode{
+			code:       ovostatus.PAYMENT_TIMED_OUT,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusBadRequest,
+		},
+		INSUFFICIENT_FUND: ResponseCode{
+			code:       ovostatus.INSUFFICIENT_FUND,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusBadRequest,
+		},
+		INVALID_TRANSACTION: ResponseCode{
+			code:       ovostatus.INVALID_TRANSACTION,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusBadRequest,
+		},
+		ORDER_CREATION_FAILED: ResponseCode{
+			code:       ovostatus.ORDER_CREATION_FAILED,
+			message:    "Bank Account Not Found",
+			httpStatus: http.StatusServiceUnavailable,
 		},
 	}
 )
