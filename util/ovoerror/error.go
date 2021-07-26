@@ -60,6 +60,7 @@ const (
 	INSUFFICIENT_FUND			= "INSUFFICIENT_FUND"
 	INVALID_TRANSACTION         = "INVALID_TRANSACTION"
 	ORDER_CREATION_FAILED 		= "ORDER_CREATION_FAILED"
+	INCOMPLETE_ACCOUNT 			= "INCOMPLETE_ACCOUNT"
 )
 
 var (
@@ -188,6 +189,11 @@ var (
 			code:       ovostatus.ORDER_CREATION_FAILED,
 			message:    "Bank Account Not Found",
 			httpStatus: http.StatusServiceUnavailable,
+		},
+		INCOMPLETE_ACCOUNT: ResponseCode{
+			code:       ovostatus.INCOMPLETE_ACCOUNT,
+			message:    "Account Is Not Complete",
+			httpStatus: http.StatusUnprocessableEntity,
 		},
 	}
 )
