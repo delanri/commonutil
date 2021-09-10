@@ -51,16 +51,18 @@ const (
 	DIFFERENT_NAME_BANK_ACCOUNT = "DIFFERENT_NAME_BANK_ACCOUNT"
 	TOP_UP_OVERLIMIT            = "TOP_UP_OVERLIMIT"
 	BANK_ACCOUNT_NOT_FOUND      = "BANK_ACCOUNT_NOT_FOUND"
-	ORS_BLOCKED 				= "ORS_BLOCKED"
-	INVALID_DATA   				= "INVALID_DATA"
-	THIRD_PARTY_ERROR 			= "THIRD_PARTY_ERROR"
-	INELIGIBLE					= "INELIGIBLE"
-	PAYMENT_FAILED				= "PAYMENT_FAILED"
-	PAYMENT_TIMED_OUT			= "PAYMENT_TIMED_OUT"
-	INSUFFICIENT_FUND			= "INSUFFICIENT_FUND"
+	ORS_BLOCKED                 = "ORS_BLOCKED"
+	INVALID_DATA                = "INVALID_DATA"
+	THIRD_PARTY_ERROR           = "THIRD_PARTY_ERROR"
+	INELIGIBLE                  = "INELIGIBLE"
+	PAYMENT_FAILED              = "PAYMENT_FAILED"
+	PAYMENT_TIMED_OUT           = "PAYMENT_TIMED_OUT"
+	INSUFFICIENT_FUND           = "INSUFFICIENT_FUND"
 	INVALID_TRANSACTION         = "INVALID_TRANSACTION"
-	ORDER_CREATION_FAILED 		= "ORDER_CREATION_FAILED"
-	INCOMPLETE_ACCOUNT 			= "INCOMPLETE_ACCOUNT"
+	ORDER_CREATION_FAILED       = "ORDER_CREATION_FAILED"
+	INCOMPLETE_ACCOUNT          = "INCOMPLETE_ACCOUNT"
+	PROMO_CODE_ERROR            = "PROMO_CODE_ERROR"
+	PROMO_BOOK_ERROR            = "PROMO_BOOK_ERROR"
 )
 
 var (
@@ -194,6 +196,16 @@ var (
 			code:       ovostatus.INCOMPLETE_ACCOUNT,
 			message:    "Account Is Not Complete",
 			httpStatus: http.StatusUnprocessableEntity,
+		},
+		PROMO_CODE_ERROR: ResponseCode{
+			code:       ovostatus.PROMO_CODE_ERROR,
+			message:    "Promo Code Error",
+			httpStatus: http.StatusBadRequest,
+		},
+		PROMO_BOOK_ERROR: ResponseCode{
+			code:       ovostatus.PROMO_BOOK_ERROR,
+			message:    "Promo Book Error",
+			httpStatus: http.StatusBadRequest,
 		},
 	}
 )
