@@ -63,6 +63,7 @@ const (
 	INCOMPLETE_ACCOUNT          = "INCOMPLETE_ACCOUNT"
 	PROMO_CODE_ERROR            = "PROMO_CODE_ERROR"
 	PROMO_BOOK_ERROR            = "PROMO_BOOK_ERROR"
+	INSUFFICIENT_APP_VERSION    = "INSUFFICIENT_APP_VERSION"
 )
 
 var (
@@ -205,6 +206,11 @@ var (
 		PROMO_BOOK_ERROR: ResponseCode{
 			code:       ovostatus.PROMO_BOOK_ERROR,
 			message:    "Promo Book Error",
+			httpStatus: http.StatusBadRequest,
+		},
+		INSUFFICIENT_APP_VERSION: ResponseCode{
+			code:       ovostatus.INSUFFICIENT_APP_VERSION,
+			message:    "Insufficient App version",
 			httpStatus: http.StatusBadRequest,
 		},
 	}
