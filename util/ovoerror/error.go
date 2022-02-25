@@ -64,6 +64,7 @@ const (
 	PROMO_CODE_ERROR            = "PROMO_CODE_ERROR"
 	PROMO_BOOK_ERROR            = "PROMO_BOOK_ERROR"
 	INSUFFICIENT_APP_VERSION    = "INSUFFICIENT_APP_VERSION"
+	PENDING_TRANSACTION_ERROR   = "PENDING_TRANSACTION_ERROR"
 )
 
 var (
@@ -211,6 +212,11 @@ var (
 		INSUFFICIENT_APP_VERSION: ResponseCode{
 			code:       ovostatus.INSUFFICIENT_APP_VERSION,
 			message:    "Insufficient App version",
+			httpStatus: http.StatusBadRequest,
+		},
+		PENDING_TRANSACTION_ERROR: ResponseCode{
+			code:       ovostatus.PENDING_TRANSACTION_ERROR,
+			message:    "Failed",
 			httpStatus: http.StatusBadRequest,
 		},
 	}
