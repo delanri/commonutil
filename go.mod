@@ -13,6 +13,8 @@ require (
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gojek/heimdall v5.0.2+incompatible
+	github.com/gojektech/heimdall v5.0.2+incompatible // indirect
+	github.com/gojektech/valkyrie v0.0.0-20190210220504-8f62c1e7ba45 // indirect
 	github.com/jinzhu/gorm v1.9.9
 	github.com/joho/godotenv v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -26,9 +28,15 @@ require (
 	github.com/segmentio/kafka-go v0.2.5
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.4.0
+	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/tidwall/pretty v1.0.1 // indirect
 	go.mongodb.org/mongo-driver v1.2.1
-	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
+	go.uber.org/zap v1.22.0 // indirect
+	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+	golang.org/x/sys v0.0.0-20210510120138-977fb7262007 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.29.0
 	syreclabs.com/go/faker v1.2.0
 )

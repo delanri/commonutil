@@ -1,11 +1,9 @@
 package logs
 
 import (
-	"os"
+	"fmt"
 
-	"github.com/pkg/errors"
-	"github.com/rifflock/lfshook"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type (
@@ -37,7 +35,7 @@ type (
 	}
 
 	logger struct {
-		instance *logrus.Logger
+		instance *zap.SugaredLogger
 	}
 )
 
@@ -75,11 +73,11 @@ func (l *logger) Errorf(format string, args ...interface{}) {
 }
 
 func (l *logger) Warning(args ...interface{}) {
-	l.instance.Warning(args...)
+	l.instance.Warn(args...)
 }
 
 func (l *logger) Warningf(format string, args ...interface{}) {
-	l.instance.Warningf(format, args...)
+	l.instance.Warnf(format, args...)
 }
 
 func (l *logger) Fatal(args ...interface{}) {
@@ -91,61 +89,28 @@ func (l *logger) Fatalf(format string, args ...interface{}) {
 }
 
 func (l *logger) Print(args ...interface{}) {
-	l.instance.Print(args...)
+	l.instance.Info(args...)
 }
 
 func (l *logger) Printf(format string, args ...interface{}) {
-	l.instance.Printf(format, args...)
+	l.instance.Infof(format, args...)
 }
 
 func (l *logger) Println(args ...interface{}) {
-	l.instance.Println(args...)
+	l.instance.Infoln(args...)
 }
 
 func (l *logger) Instance() interface{} {
 	return l.instance
 }
 func New(option *Option) (Logger, error) {
-	instance := logrus.New()
-
-	if option.Level == Info {
-		instance.Level = logrus.InfoLevel
+	instance, err := zap.NewProduction()
+	if err != nil {
+		instance.Error("logger initialization error", zap.Any("error", err))
+		panic(fmt.Sprintf("logger initialization failed %v", err))
 	}
 
-	if option.Level == Debug {
-		instance.Level = logrus.DebugLevel
-	}
-
-	if option.Level == Error {
-		instance.Level = logrus.ErrorLevel
-	}
-
-	var formatter logrus.Formatter
-
-	if option.Formatter == JSONFormatter {
-		formatter = &logrus.JSONFormatter{}
-	} else {
-		formatter = &logrus.TextFormatter{}
-	}
-
-	instance.Formatter = formatter
-
-	// - check if log file path does exists
-	if option.LogFilePath != "" {
-		if _, err := os.Stat(option.LogFilePath); os.IsNotExist(err) {
-			if _, err = os.Create(option.LogFilePath); err != nil {
-				return nil, errors.Wrapf(err, "failed to create log file %s", option.LogFilePath)
-			}
-		}
-		maps := lfshook.PathMap{
-			logrus.InfoLevel:  option.LogFilePath,
-			logrus.DebugLevel: option.LogFilePath,
-			logrus.ErrorLevel: option.LogFilePath,
-		}
-		instance.Hooks.Add(lfshook.NewHook(maps, formatter))
-	}
-
-	return &logger{instance}, nil
+	return &logger{instance.Sugar()}, nil
 }
 
 func DefaultLog() (Logger, error) {
@@ -156,6 +121,6 @@ func DefaultLog() (Logger, error) {
 }
 
 func (l *logger) AddDefault(key string, value interface{}) *logger {
-	l.instance.WithField(key, value)
+	l.instance.With(key, value)
 	return l
 }
